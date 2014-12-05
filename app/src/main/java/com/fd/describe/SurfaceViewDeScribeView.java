@@ -1,6 +1,7 @@
 package com.fd.describe;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -40,9 +41,12 @@ public class SurfaceViewDeScribeView extends SurfaceView implements DeScribePres
         }
     }
 
-
     public SurfaceViewDeScribeView(Context context) {
-        super(context);
+        this(context, null);
+    }
+
+    public SurfaceViewDeScribeView(Context context, AttributeSet attrs) {
+        super(context, attrs);
         setKeepScreenOn(true);
 
         setOnLongClickListener(new OnLongClickListener() {

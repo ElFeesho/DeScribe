@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <com.fd.describe.SurfaceViewDeScribeView
+        android:id="@+id/DeScribeView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <com.fd.describe.LinearLayoutColourPalette
+        android:orientation="horizontal"
+        android:id="@+id/DeScribeColourPalette"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:layout_gravity="bottom"
+        android:background="#999"/>
+</FrameLayout>

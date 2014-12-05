@@ -61,7 +61,6 @@ public class DeScribePresenter {
     {
         this.view = view;
         this.renderer = renderer;
-
         this.view.setListener(new DeScribeView.Listener() {
             @Override
             public void canDraw() {
@@ -105,4 +104,8 @@ public class DeScribePresenter {
         });
     }
 
+    public void setColour(int colour)
+    {
+        renderer.setColour(colour);
+    }
 }
