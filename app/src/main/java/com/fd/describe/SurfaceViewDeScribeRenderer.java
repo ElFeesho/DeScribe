@@ -4,20 +4,15 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.RectF;
 import android.view.SurfaceView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SurfaceViewDeScribeRenderer implements DeScribePresenter.DeScribeRenderer {
     private SurfaceView surfaceView;
     private Bitmap canvasBuffer;
     private Canvas canvas;
     private Paint paint;
+    private Paint erasePaint;
     private Path currentPathBuffer;
-    private List<Path> previouslyDrawnPaths = new ArrayList<Path>();
-    private List<Float> previouslyDrawnThickness = new ArrayList<Float>();
 
     private DeScribePresenter.DeScribeView.DeScribePoint lastPoint;
 
@@ -30,6 +25,8 @@ public class SurfaceViewDeScribeRenderer implements DeScribePresenter.DeScribeRe
         paint.setAntiAlias(true);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);
+        erasePaint = new Paint();
+        erasePaint.setColor(0xffffffff);
         currentPathBuffer = new Path();
     }
 
@@ -43,10 +40,7 @@ public class SurfaceViewDeScribeRenderer implements DeScribePresenter.DeScribeRe
 
     @Override
     public void endPath(DeScribePresenter.DeScribeView.DeScribePoint point) {
-        canvas.drawPath(currentPathBuffer, paint);
-        previouslyDrawnPaths.add(currentPathBuffer);
-        previouslyDrawnThickness.add(paint.getStrokeWidth());
-        currentPathBuffer = new Path();
+
     }
 
     @Override
@@ -55,9 +49,8 @@ public class SurfaceViewDeScribeRenderer implements DeScribePresenter.DeScribeRe
         updateStrokeWidth(point);
         currentPathBuffer.quadTo(lastPoint.x, lastPoint.y, (point.x + lastPoint.x) / 2, (point.y + lastPoint.y) / 2);
         canvas.drawPath(currentPathBuffer, paint);
-        previouslyDrawnPaths.add(currentPathBuffer);
-        previouslyDrawnThickness.add(paint.getStrokeWidth());
-        currentPathBuffer = new Path();
+
+        currentPathBuffer.reset();
         currentPathBuffer.setLastPoint((point.x + lastPoint.x) / 2, (point.y + lastPoint.y) / 2);
 
         lastPoint = point;
@@ -66,15 +59,12 @@ public class SurfaceViewDeScribeRenderer implements DeScribePresenter.DeScribeRe
     }
 
     private void updateStrokeWidth(DeScribePresenter.DeScribeView.DeScribePoint point) {
-        float targetWidth = 10.0f * (point.pressure*1.5f);
+        float targetWidth = 10.0f * (point.pressure * 1.5f);
         float currentWidth = paint.getStrokeWidth();
-        if(Math.abs(targetWidth-currentWidth)<1.0f)
-        {
+        if (Math.abs(targetWidth - currentWidth) < 1.0f) {
             paint.setStrokeWidth(targetWidth);
-        }
-        else
-        {
-            paint.setStrokeWidth((targetWidth<currentWidth)?(currentWidth-1.0f):(currentWidth+1.0f));
+        } else {
+            paint.setStrokeWidth((targetWidth < currentWidth) ? (currentWidth - 1.0f) : (currentWidth + 1.0f));
         }
     }
 
@@ -104,29 +94,7 @@ public class SurfaceViewDeScribeRenderer implements DeScribePresenter.DeScribeRe
 
     @Override
     public void erasePathAt(DeScribePresenter.DeScribeView.DeScribePoint point) {
-        RectF rect = new RectF();
-        RectF eraser = new RectF(point.x - 30.f, point.y - 30.f, point.x + 30.f, point.y + 30.f);
-
-        canvas.drawColor(0xffffffff);
-        for(int i = 0; i < previouslyDrawnPaths.size(); i++)
-        {
-            previouslyDrawnPaths.get(i).computeBounds(rect, false);
-            if(rect.intersect(eraser) || eraser.contains(rect))
-            {
-                previouslyDrawnPaths.get(i).reset();
-            }
-            paint.setStrokeWidth(previouslyDrawnThickness.get(i));
-            canvas.drawPath(previouslyDrawnPaths.get(i), paint);
-        }
+        canvas.drawCircle(point.x, point.y, 30.f, erasePaint);
         postUpdate();
-
-        for(int i = previouslyDrawnPaths.size() - 1; i >= previouslyDrawnPaths.size(); i--)
-        {
-            if(previouslyDrawnPaths.get(i).isEmpty())
-            {
-                previouslyDrawnPaths.remove(i);
-                previouslyDrawnThickness.remove(i);
-            }
-        }
     }
 }

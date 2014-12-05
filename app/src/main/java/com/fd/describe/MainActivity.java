@@ -9,7 +9,12 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SurfaceViewDeScribeView view = new SurfaceViewDeScribeView(this);
-        new DeScribePresenter(view, new SurfaceViewDeScribeRenderer(view));
+        new DeScribePresenter(view, new SurfaceViewDeScribeRenderer(view), new DeScribePresenter.ColourPaletteListener() {
+            @Override
+            public void displayColourPalette() {
+
+            }
+        });
         setContentView(view);
     }
 }

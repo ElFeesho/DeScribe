@@ -19,6 +19,8 @@ public class DeScribePresenter {
             void size(int width, int height);
 
             void cannotDraw();
+
+            void requestColourPalette();
         }
 
         public interface DrawListener
@@ -32,6 +34,10 @@ public class DeScribePresenter {
         void setListener(Listener listener);
         void setDrawListener(DrawListener listener);
         void removeDrawListener();
+    }
+
+    public interface ColourPaletteListener {
+        public void displayColourPalette();
     }
 
     public interface DeScribeRenderer
@@ -51,7 +57,7 @@ public class DeScribePresenter {
     private final DeScribeView view;
     private final DeScribeRenderer renderer;
 
-    public DeScribePresenter(DeScribeView view, DeScribeRenderer renderer)
+    public DeScribePresenter(DeScribeView view, DeScribeRenderer renderer, final ColourPaletteListener colourPaletteListener)
     {
         this.view = view;
         this.renderer = renderer;
@@ -91,6 +97,12 @@ public class DeScribePresenter {
             public void cannotDraw() {
                 DeScribePresenter.this.view.removeDrawListener();
             }
+
+            @Override
+            public void requestColourPalette() {
+                colourPaletteListener.displayColourPalette();
+            }
         });
     }
+
 }

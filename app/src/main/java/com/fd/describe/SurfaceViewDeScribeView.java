@@ -44,6 +44,15 @@ public class SurfaceViewDeScribeView extends SurfaceView implements DeScribePres
     public SurfaceViewDeScribeView(Context context) {
         super(context);
         setKeepScreenOn(true);
+
+        setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                listener.requestColourPalette();
+                return false;
+            }
+        });
+
         getHolder().addCallback(new SurfaceHolder.Callback() {
 
             @Override
